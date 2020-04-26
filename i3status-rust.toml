@@ -1,0 +1,15 @@
+[[block]]
+block = "focused_window"
+
+[[block]]
+block = "disk_space"
+
+[[block]]
+block = "maildir"
+inboxes = ["/home/pmc/Maildir/fastmail/Inbox"]
+
+[[block]]
+block = "memory"
+
+[[block]]
+block = "music"
