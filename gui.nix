@@ -13,6 +13,7 @@ in {
     pkgs.obs-studio
     (pkgs.steam.override { nativeOnly = true; })
     pkgs.xfce.thunar
+    pkgs.jetbrains.idea-ultimate
   ];
 
   programs.firefox = {
