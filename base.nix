@@ -23,6 +23,7 @@
     enable = true;
     userName = "Piper McCorkle";
     userEmail = "contact@piperswe.me";
+    lfs.enable = true;
   };
 
   programs.neovim = {
