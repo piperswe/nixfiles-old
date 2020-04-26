@@ -1,6 +1,10 @@
-{ config, pkgs, lib, fetchurl, ... }:
+{ config, pkgs, lib, ... }:
 
-{
+let desktopBackground = pkgs.fetchurl {
+  url = "https://images.unsplash.com/photo-1555021890-2a10a279e77d";
+  sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
+};
+in {
   home.packages = [
     pkgs.mpc_cli
     pkgs.cantata
@@ -8,6 +12,7 @@
     pkgs.multimc
     pkgs.obs-studio
     (pkgs.steam.override { nativeOnly = true; })
+    pkgs.xfce.thunar
   ];
 
   programs.firefox = {
@@ -45,7 +50,7 @@
 
   xsession = {
     enable = true;
-    initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${config.home.homeDirectory}/.config/nixpkgs/desktop-background.jpg" &'';
+    initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
     windowManager.i3 = {
       enable = true;
       config = {
