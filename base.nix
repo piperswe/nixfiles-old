@@ -5,6 +5,7 @@
     pkgs.any-nix-shell
     pkgs._1password
     pkgs.python
+    pkgs.leiningen
   ];
 
   home.sessionVariables = {
