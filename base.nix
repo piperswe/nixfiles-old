@@ -6,6 +6,7 @@
     pkgs._1password
     pkgs.python
     pkgs.leiningen
+    pkgs.wget
   ];
 
   home.sessionVariables = {

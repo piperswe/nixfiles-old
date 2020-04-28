@@ -13,7 +13,11 @@ in {
     pkgs.obs-studio
     (pkgs.steam.override { nativeOnly = true; })
     pkgs.xfce.thunar
+    pkgs.xfce.thunar-archive-plugin
+    pkgs.gnome3.file-roller
     pkgs.jetbrains.idea-ultimate
+    pkgs.riot-desktop
+    pkgs.tdesktop
   ];
 
   programs.firefox = {
