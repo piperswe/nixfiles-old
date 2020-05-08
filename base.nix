@@ -8,7 +8,7 @@
     pkgs.leiningen
     pkgs.wget
     pkgs.bat
-    pkgs.sshfs
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.sshfs)
   ];
 
   home.sessionVariables = {
@@ -18,7 +18,7 @@
 
   programs.gpg.enable = true;
 
-  services.gpg-agent = {
+  services.gpg-agent = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     enableSshSupport = true;
   };
@@ -41,7 +41,7 @@
       pkgs.vimPlugins.vim-airline
       pkgs.vimPlugins.rainbow_parentheses-vim
       pkgs.vimPlugins.vim-ledger
-      pkgs.vimPlugins.syntastic
+      (lib.mkIf pkgs.stdenv.isLinux pkgs.vimPlugins.syntastic)
       pkgs.vimPlugins.vim-fish
       pkgs.vimPlugins.gruvbox
       pkgs.vimPlugins.vim-toml
@@ -55,12 +55,12 @@
       colorscheme gruvbox
       set mouse=a
       set number
-      let g:syntastic_always_populate_loc_list = 1
-      let g:syntastic_auto_loc_list = 1
-      let g:syntastic_check_on_open = 1
-      let g:syntastic_check_on_wq = 0
-      let g:syntastic_perl_checkers = ['perl', 'perlcritic']
-      let g:syntastic_enable_perl_checker = 1
+      "let g:syntastic_always_populate_loc_list = 1
+      "let g:syntastic_auto_loc_list = 1
+      "let g:syntastic_check_on_open = 1
+      "let g:syntastic_check_on_wq = 0
+      "let g:syntastic_perl_checkers = ['perl', 'perlcritic']
+      "let g:syntastic_enable_perl_checker = 1
       let g:airline_powerline_fonts = 1
       let g:ledger_maxwidth = 80
     '';
@@ -95,14 +95,14 @@
     ];
   };
 
-  programs.ledger = {
-    enable = true;
-    file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
-    priceDB = "${config.home.homeDirectory}/Documents/ledger/prices.journal";
-    extraConfig = ''
-      --sort date
-    '';
-  };
+  #programs.ledger = {
+  #  enable = true;
+  #  file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
+  #  priceDB = "${config.home.homeDirectory}/Documents/ledger/prices.journal";
+  #  extraConfig = ''
+  #    --sort date
+  #  '';
+  #};
 
   home.file = {
     ".lein/profiles.clj".text = ''
