@@ -5,6 +5,7 @@ let desktopBackground = pkgs.fetchurl {
   sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
 };
 in {
+  fonts.fontconfig.enable = true;
   home.packages = [
     (lib.mkIf pkgs.stdenv.isLinux pkgs.cantata)
     (lib.mkIf pkgs.stdenv.isLinux pkgs.minecraft)
@@ -22,6 +23,8 @@ in {
     (lib.mkIf pkgs.stdenv.isLinux pkgs.zoom-us)
     (lib.mkIf pkgs.stdenv.isLinux pkgs.vlc)
     pkgs.mpv
+
+    pkgs.nerdfonts
 
     (lib.mkIf pkgs.stdenv.isLinux pkgs.abiword)
     (lib.mkIf pkgs.stdenv.isLinux pkgs.gnumeric)
@@ -46,6 +49,11 @@ in {
   programs.alacritty = {
     enable = true;
     settings = {
+      font = {
+        normal.family = "Monoid Nerd Font";
+        bold.family = "Monoid Nerd Font";
+        italic.family = "Monoid Nerd Font";
+      };
       colors = {
         primary = {
           background = "#282828";
