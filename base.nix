@@ -7,6 +7,8 @@
     pkgs.python
     pkgs.leiningen
     pkgs.wget
+    pkgs.bat
+    pkgs.sshfs
   ];
 
   home.sessionVariables = {
@@ -91,6 +93,15 @@
         };
       }
     ];
+  };
+
+  programs.ledger = {
+    enable = true;
+    file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
+    priceDB = "${config.home.homeDirectory}/Documents/ledger/prices.journal";
+    extraConfig = ''
+      --sort date
+    '';
   };
 
   home.file = {

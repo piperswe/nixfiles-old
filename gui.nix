@@ -16,8 +16,16 @@ in {
     pkgs.xfce.thunar-archive-plugin
     pkgs.gnome3.file-roller
     pkgs.jetbrains.idea-ultimate
+    pkgs.android-studio
     pkgs.riot-desktop
     pkgs.tdesktop
+    pkgs.discord
+    pkgs.zoom-us
+    pkgs.vlc
+    pkgs.mpv
+
+    pkgs.abiword
+    pkgs.gnumeric
   ];
 
   programs.firefox = {

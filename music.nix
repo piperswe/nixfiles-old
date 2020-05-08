@@ -1,16 +1,55 @@
-{ config, pkgs, ... }:
+{ config, pkgs, fetchurl, ... }:
 
 let dir = "${config.home.homeDirectory}/Music";
-    secrets = import ./secrets.nix;
+secrets = import ./secrets.nix;
+ffmpeg = pkgs.ffmpeg-full.override {
+  nonfreeLicensing = true;
+  fdkaacExtlib = true;
+};
+aac-encoder = pkgs.writeScriptBin "aac-encoder" ''
+  #!${pkgs.bash}/bin/bash
+  set -euo pipefail
+  shopt -s globstar
+
+  mkdir -p "$(dirname "$2")"
+  nice ${ffmpeg}/bin/ffmpeg -y -i "$1" -vn -c:a libfdk_aac -vbr 5 -movflags +faststart -af aresample=resampler=soxr -ar 44100 "$2"
+'';
+mp3-encoder = pkgs.writeScriptBin "mp3-encoder" ''
+  #!${pkgs.bash}/bin/bash
+  set -euo pipefail
+  shopt -s globstar
+
+  mkdir -p "$(dirname "$2")"
+  nice ${ffmpeg}/bin/ffmpeg -y -i "$1" -vn -c:a libmp3lame -V 0 -movflags +faststart -af aresample=resampler=soxr -ar 44100 "$2"
+'';
+sync-music = pkgs.writeScriptBin "sync-music" ''
+  #!${pkgs.bash}/bin/bash
+  set -euo pipefail
+  shopt -s globstar
+
+  IPOD="/media/pmc/PIPER'S IPO"
+
+  ${pkgs.qtscrobbler}/bin/scrobbler -c ~/Music/qtscrob.conf -f -l "$IPOD/"
+  ${pkgs.beets}/bin/beet splupdate
+  ${pkgs.rsync}/bin/rsync -rpthu --inplace --delete --info=progress2 ~/Music/playlists/ "$IPOD/Playlists/"
+  ${pkgs.rsync}/bin/rsync -rpthu --inplace --delete --info=progress2 ~/Music/ "$IPOD/Music/"
+'';
 in {
   home.packages = [
     pkgs.rubyripper
     pkgs.cdrdao
     pkgs.flac
     pkgs.imagemagick
+    pkgs.makemkv
+    pkgs.ccextractor
+    aac-encoder
+    mp3-encoder
+    sync-music
   ];
 
   home.file.".config/rubyripper/settings".source = ./rubyripper.ini;
+
+  services.syncthing.enable = true;
 
   programs.fish.functions.ripcd = {
     body = ''
@@ -32,7 +71,7 @@ in {
       library = "${dir}/musiclibrary.db";
       asciify_paths = true;
       import.move = true;
-      plugins = "fetchart embedart lyrics lastgenre chroma convert replaygain acousticbrainz thumbnails mbsync mbcollection absubmit web bpd discogs badfiles smartplaylist playlist";
+      plugins = "fetchart embedart lyrics lastgenre chroma convert replaygain acousticbrainz mbsync mbcollection absubmit web bpd discogs badfiles smartplaylist playlist";
       lyrics.auto = true;
       absubmit.auto = true;
       thumbnails.auto = true;
@@ -44,10 +83,10 @@ in {
         format = "aac";
         formats = {
           aac = {
-            command = "${dir}/encode.sh $source $dest";
+            command = "${aac-encoder}/bin/aac-encoder $source $dest";
             extension = "m4a";
           };
-          mp3 = "${dir}/encode-mp3.sh $source $dest";
+          mp3 = "${mp3-encoder}/bin/mp3-encoder $source $dest";
         };
       };
       replaygain.backend = "gstreamer";
