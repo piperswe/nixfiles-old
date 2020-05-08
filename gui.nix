@@ -6,29 +6,28 @@ let desktopBackground = pkgs.fetchurl {
 };
 in {
   home.packages = [
-    pkgs.mpc_cli
-    pkgs.cantata
-    pkgs.minecraft
-    pkgs.multimc
-    pkgs.obs-studio
-    (pkgs.steam.override { nativeOnly = true; })
-    pkgs.xfce.thunar
-    pkgs.xfce.thunar-archive-plugin
-    pkgs.gnome3.file-roller
-    pkgs.jetbrains.idea-ultimate
-    pkgs.android-studio
-    pkgs.riot-desktop
-    pkgs.tdesktop
-    pkgs.discord
-    pkgs.zoom-us
-    pkgs.vlc
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.cantata)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.minecraft)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.multimc)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.obs-studio)
+    (lib.mkIf pkgs.stdenv.isLinux (pkgs.steam.override { nativeOnly = true; }))
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.xfce.thunar)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.xfce.thunar-archive-plugin)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.gnome3.file-roller)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.jetbrains.idea-ultimate)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.android-studio)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.riot-desktop)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.tdesktop)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.discord)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.zoom-us)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.vlc)
     pkgs.mpv
 
-    pkgs.abiword
-    pkgs.gnumeric
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.abiword)
+    (lib.mkIf pkgs.stdenv.isLinux pkgs.gnumeric)
   ];
 
-  programs.firefox = {
+  programs.firefox = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       https-everywhere
@@ -44,24 +43,14 @@ in {
     };
   };
 
-  services.mpd = {
-    enable = true;
-    musicDirectory = "${config.home.homeDirectory}/Music";
-    playlistDirectory = "${config.home.homeDirectory}/Music/playlists";
-  };
-  services.mpdris2 = {
-    enable = true;
-    mpd.musicDirectory = "${config.home.homeDirectory}/Music";
-  };
-
   programs.alacritty.enable = true;
 
-  programs.rofi = {
+  programs.rofi = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     extraConfig = "rofi.modi: drun";
   };
 
-  xsession = {
+  xsession = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
     windowManager.i3 = {

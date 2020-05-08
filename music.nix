@@ -51,6 +51,16 @@ in {
 
   services.syncthing.enable = true;
 
+  services.mpd = {
+    enable = true;
+    musicDirectory = "${config.home.homeDirectory}/Music";
+    playlistDirectory = "${config.home.homeDirectory}/Music/playlists";
+  };
+  services.mpdris2 = {
+    enable = true;
+    mpd.musicDirectory = "${config.home.homeDirectory}/Music";
+  };
+
   programs.fish.functions.ripcd = {
     body = ''
       set TEMPDIR (mktemp -d)
