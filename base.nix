@@ -15,6 +15,7 @@
   home.sessionVariables = {
     TERMINAL = "${pkgs.alacritty}/bin/alacritty";
     EDITOR = "nvim";
+    TMUX_TMPDIR = "$HOME/.tmp/tmux";
   };
 
   programs.gpg.enable = true;
@@ -109,6 +110,25 @@
           rev = "d8c0463518fb95bed8818a1e7fe5da20cffe6fbd";
           sha256 = "0hkps4ddz99r7m52lwyzidbalrwvi7h2afpawh9yv6a226pjmck7";
         };
+      }
+    ];
+  };
+
+  programs.tmux = {
+    enable = true;
+    plugins = with pkgs.tmuxPlugins; [
+      battery
+      gruvbox
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+        '';
+      }
+      cpu
+      {
+        plugin = resurrect;
+        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
       }
     ];
   };
