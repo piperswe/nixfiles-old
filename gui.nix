@@ -31,8 +31,8 @@ in {
     fira-code
     fira-code-symbols
 
-    (ifLinux pkgs.abiword)
-    (ifLinux pkgs.gnumeric)
+    (ifLinux abiword)
+    (ifLinux gnumeric)
   ];
 
   programs.firefox = ifLinux {
