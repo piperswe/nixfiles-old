@@ -135,6 +135,7 @@ in {
 
   xsession = ifLinux {
     enable = true;
+    initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
     #windowManager.command = "${pkgs.sway}/bin/sway";
     windowManager.i3 = {
       enable = true;
