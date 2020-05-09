@@ -56,10 +56,7 @@ in {
     musicDirectory = "${config.home.homeDirectory}/Music";
     playlistDirectory = "${config.home.homeDirectory}/Music/playlists";
   };
-  services.mpdris2 = {
-    enable = true;
-    mpd.musicDirectory = "${config.home.homeDirectory}/Music";
-  };
+  services.mpdris2.enable = true;
 
   programs.fish.functions.ripcd = {
     body = ''

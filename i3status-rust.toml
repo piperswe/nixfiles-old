@@ -16,3 +16,10 @@ block = "memory"
 
 [[block]]
 block = "music"
+player = "mpd"
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "time"

@@ -5,6 +5,7 @@ let desktopBackground = pkgs.fetchurl {
   sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
 };
 ifLinux = lib.mkIf pkgs.stdenv.isLinux;
+i3status-rust = pkgs.callPackage ./i3status-rust.nix {};
 i3Config = {
   fonts = [ "Monoid Nerd Font" ];
   keybindings = lib.mkOptionDefault {
@@ -14,7 +15,7 @@ i3Config = {
     {
       fonts = [ "Monoid Nerd Font" ];
       position = "bottom";
-      statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+      statusCommand = "${i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
       colors = {
         background = "#282828";
         statusline = "#ebdbb2";
