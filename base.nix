@@ -8,6 +8,7 @@
     pkgs.leiningen
     pkgs.wget
     pkgs.bat
+    pkgs.htop
     (lib.mkIf pkgs.stdenv.isLinux pkgs.sshfs)
   ];
 
