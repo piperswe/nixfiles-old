@@ -23,9 +23,13 @@ in {
     (ifLinux discord)
     (ifLinux zoom-us)
     (ifLinux vlc)
-    pkgs.mpv
+    mpv
 
-    pkgs.nerdfonts
+    nerdfonts
+    powerline-fonts
+    ibm-plex
+    fira-code
+    fira-code-symbols
 
     (ifLinux pkgs.abiword)
     (ifLinux pkgs.gnumeric)

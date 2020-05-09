@@ -9,6 +9,7 @@
     wget
     bat
     htop
+    mosh
     (lib.mkIf stdenv.isLinux sshfs)
   ];
 
