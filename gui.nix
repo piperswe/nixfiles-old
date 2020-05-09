@@ -5,6 +5,46 @@ let desktopBackground = pkgs.fetchurl {
   sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
 };
 ifLinux = lib.mkIf pkgs.stdenv.isLinux;
+i3Config = {
+  fonts = [ "Monoid Nerd Font" ];
+  keybindings = lib.mkOptionDefault {
+    "Mod1+p" = "exec rofi -show drun";
+  };
+  bars = [
+    {
+      fonts = [ "Monoid Nerd Font" ];
+      position = "bottom";
+      statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+      colors = {
+        background = "#282828";
+        statusline = "#ebdbb2";
+      };
+    }
+  ];
+  colors = {
+    focused = rec {
+      border = "#458588";
+      text = "#ebdbb2";
+      background = border;
+      indicator = border;
+      childBorder = border;
+    };
+    focusedInactive = rec {
+      border = "#83a598";
+      text = "#ebdbb2";
+      background = border;
+      indicator = border;
+      childBorder = border;
+    };
+    unfocused = rec {
+      border = "#928374";
+      text = "#ebdbb2";
+      background = border;
+      indicator = border;
+      childBorder = border;
+    };
+  };
+};
 in {
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
@@ -95,49 +135,15 @@ in {
 
   xsession = ifLinux {
     enable = true;
-    initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
+    #windowManager.command = "${pkgs.sway}/bin/sway";
     windowManager.i3 = {
       enable = true;
-      config = {
-        fonts = ["Monoid Nerd Font"];
-        keybindings = lib.mkOptionDefault {
-          "Mod1+p" = "exec rofi -show drun";
-        };
-        bars = [
-          {
-            fonts = [ "Monoid Nerd Font" ];
-            position = "bottom";
-            statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
-            colors = {
-              background = "#282828";
-              statusline = "#ebdbb2";
-            };
-          }
-        ];
-        colors = {
-          focused = rec {
-            border = "#458588";
-            text = "#ebdbb2";
-            background = border;
-            indicator = border;
-            childBorder = border;
-          };
-          focusedInactive = rec {
-            border = "#83a598";
-            text = "#ebdbb2";
-            background = border;
-            indicator = border;
-            childBorder = border;
-          };
-          unfocused = rec {
-            border = "#928374";
-            text = "#ebdbb2";
-            background = border;
-            indicator = border;
-            childBorder = border;
-          };
-        };
-      };
+      config = i3Config;
     };
+  };
+
+  wayland.windowManager.sway = ifLinux {
+    enable = true;
+    config = i3Config;
   };
 }
