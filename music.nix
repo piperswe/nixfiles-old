@@ -35,13 +35,13 @@ sync-music = pkgs.writeScriptBin "sync-music" ''
   ${pkgs.rsync}/bin/rsync -rpthu --inplace --delete --info=progress2 ~/Music/ "$IPOD/Music/"
 '';
 in {
-  home.packages = [
-    pkgs.rubyripper
-    pkgs.cdrdao
-    pkgs.flac
-    pkgs.imagemagick
-    pkgs.makemkv
-    pkgs.ccextractor
+  home.packages = with pkgs; [
+    rubyripper
+    cdrdao
+    flac
+    imagemagick
+    makemkv
+    ccextractor
     aac-encoder
     mp3-encoder
     sync-music

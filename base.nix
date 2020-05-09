@@ -1,15 +1,15 @@
 { config, pkgs, lib, fetchurl, ... }:
 
 {
-  home.packages = [
-    pkgs.any-nix-shell
-    pkgs._1password
-    pkgs.python
-    pkgs.leiningen
-    pkgs.wget
-    pkgs.bat
-    pkgs.htop
-    (lib.mkIf pkgs.stdenv.isLinux pkgs.sshfs)
+  home.packages = with pkgs; [
+    any-nix-shell
+    _1password
+    python
+    leiningen
+    wget
+    bat
+    htop
+    (lib.mkIf stdenv.isLinux sshfs)
   ];
 
   home.sessionVariables = {
@@ -36,17 +36,17 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
-    plugins = [
-      pkgs.vimPlugins.vim-nix
-      pkgs.vimPlugins.vim-fireplace
-      pkgs.vimPlugins.vim-airline
-      pkgs.vimPlugins.rainbow_parentheses-vim
-      pkgs.vimPlugins.vim-ledger
-      (lib.mkIf pkgs.stdenv.isLinux pkgs.vimPlugins.syntastic)
-      pkgs.vimPlugins.vim-fish
-      pkgs.vimPlugins.gruvbox
-      pkgs.vimPlugins.vim-toml
-      pkgs.vimPlugins.rust-vim
+    plugins = with pkgs; with vimPlugins; [
+      vim-nix
+      vim-fireplace
+      vim-airline
+      rainbow_parentheses-vim
+      vim-ledger
+      (lib.mkIf stdenv.isLinux syntastic)
+      vim-fish
+      gruvbox
+      vim-toml
+      rust-vim
     ];
     extraConfig = ''
       syntax enable
@@ -100,7 +100,7 @@
           rev = "6e75f31c3fd10944b108b0338e855a993bad17c9";
           sha256 = "0qn4pr6l7fbljnl8jjgm0mdw1rjdv9mc8y7wpk7rcnkkaqrd457r";
         };
-      }
+      `}
       {
         name = "gruvbox";
         src = pkgs.fetchFromGitHub {
