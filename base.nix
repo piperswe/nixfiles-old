@@ -101,7 +101,7 @@
           rev = "6e75f31c3fd10944b108b0338e855a993bad17c9";
           sha256 = "0qn4pr6l7fbljnl8jjgm0mdw1rjdv9mc8y7wpk7rcnkkaqrd457r";
         };
-      `}
+      }
       {
         name = "gruvbox";
         src = pkgs.fetchFromGitHub {
