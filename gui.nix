@@ -63,6 +63,7 @@ in {
     (ifLinux discord)
     (ifLinux zoom-us)
     (ifLinux vlc)
+    (ifLinux gnome3.gnome-keyring)
     mpv
 
     nerdfonts

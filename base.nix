@@ -258,6 +258,9 @@
     ];
   };
 
+  services.keybase.enable = pkgs.stdenv.isLinux;
+  services.kbfs.enable = pkgs.stdenv.isLinux;
+
   #programs.ledger = {
   #  enable = true;
   #  file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
