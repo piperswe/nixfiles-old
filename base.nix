@@ -81,6 +81,7 @@
     functions = {
       fish_greeting = ''
         cat ${./greeting.txt}
+        ${pkgs.pfetch}/bin/pfetch
       '';
     };
     plugins = [
