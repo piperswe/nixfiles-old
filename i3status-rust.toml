@@ -1,3 +1,5 @@
+theme = "gruvbox-dark"
+
 [[block]]
 block = "focused_window"
 

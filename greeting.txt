@@ -1,0 +1,2 @@
+Welcome to pmc's Nix-based command line environment!
+This environment is configured in ~/.config/nixpkgs.

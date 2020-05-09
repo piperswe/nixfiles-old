@@ -72,7 +72,15 @@
       set -gx EDITOR nvim
       alias ssh "${pkgs.ssh-ident}/bin/ssh-ident"
     '';
-    promptInit = ''any-nix-shell fish --info-right | source'';
+    promptInit = ''
+      any-nix-shell fish --info-right | source
+      theme_gruvbox dark
+    '';
+    functions = {
+      fish_greeting = ''
+        cat ${./greeting.txt}
+      '';
+    };
     plugins = [
       {
         name = "foreign-env";
@@ -90,6 +98,15 @@
           repo = "theme-bobthefish";
           rev = "6e75f31c3fd10944b108b0338e855a993bad17c9";
           sha256 = "0qn4pr6l7fbljnl8jjgm0mdw1rjdv9mc8y7wpk7rcnkkaqrd457r";
+        };
+      }
+      {
+        name = "gruvbox";
+        src = pkgs.fetchFromGitHub {
+          owner = "jomik";
+          repo = "fish-gruvbox";
+          rev = "d8c0463518fb95bed8818a1e7fe5da20cffe6fbd";
+          sha256 = "0hkps4ddz99r7m52lwyzidbalrwvi7h2afpawh9yv6a226pjmck7";
         };
       }
     ];

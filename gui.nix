@@ -94,7 +94,7 @@ in {
     windowManager.i3 = {
       enable = true;
       config = {
-        fonts = ["IBM Plex Sans"];
+        fonts = ["Monoid Nerd Font"];
         keybindings = lib.mkOptionDefault {
           "Mod1+p" = "exec rofi -show drun";
         };
@@ -102,8 +102,35 @@ in {
           {
             position = "bottom";
             statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+            colors = {
+              background = "#282828";
+              statusline = "#ebdbb2";
+            };
           }
         ];
+        colors = {
+          focused = rec {
+            border = "#458588";
+            text = "#ebdbb2";
+            background = border;
+            indicator = border;
+            childBorder = border;
+          };
+          focusedInactive = rec {
+            border = "#83a598";
+            text = "#ebdbb2";
+            background = border;
+            indicator = border;
+            childBorder = border;
+          };
+          unfocused = rec {
+            border = "#928374";
+            text = "#ebdbb2";
+            background = border;
+            indicator = border;
+            childBorder = border;
+          };
+        };
       };
     };
   };
