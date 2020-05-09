@@ -146,4 +146,33 @@ in {
     enable = true;
     config = i3Config;
   };
+
+  # If this doesn't work, add this to your system configuration:
+  # programs.dconf.enable = true;
+  gtk = {
+    enable = true;
+    theme = {
+      package = pkgs.arc-theme;
+      name = "Arc-Darker";
+    };
+    iconTheme = {
+      package = pkgs.arc-icon-theme;
+      name = "Arc";
+    };
+    font = {
+      name = "Monoid Nerd Font";
+    };
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "x-scheme-handler/discord-472164236332630018" = "discord-472164236332630018.desktop";
+      "text/html" = "firefox.desktop";
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/about" = "firefox.desktop";
+      "x-scheme-handler/unknown" = "firefox.desktop";
+    };
+  };
 }
