@@ -65,6 +65,7 @@ in {
     (ifLinux vlc)
     (ifLinux gnome3.gnome-keyring)
     mpv
+    (ifLinux keybase-gui)
 
     nerdfonts
     powerline-fonts
