@@ -279,7 +279,7 @@
     ".config/starship.toml".text = ''
       [hostname]
       disabled = false
-      trim_at = .hodgepodge.dev
+      trim_at = ".hodgepodge.dev"
     '';
   };
 
