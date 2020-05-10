@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    any-nix-shell
     _1password
     python
     leiningen
@@ -11,6 +10,7 @@
     htop
     mosh
     links
+    file
     (lib.mkIf stdenv.isLinux sshfs)
   ];
 
@@ -199,8 +199,9 @@
       alias ssh "${pkgs.ssh-ident}/bin/ssh-ident"
     '';
     promptInit = ''
-      any-nix-shell fish --info-right | source
+      ${pkgs.any-nix-shell}/bin/any-nix-shell fish --info-right | source
       theme_gruvbox dark
+      ${pkgs.starship}/bin/starship init fish | source
     '';
     functions = {
       fish_greeting = ''
@@ -275,6 +276,11 @@
       {:user {:plugins [[cider/cider-nrepl "0.24.0"]]}}
     '';
     ".lein/credentials.clj.gpg".source = ./lein/credentials.clj.gpg;
+    ".config/starship.toml".text = ''
+      [hostname]
+      disabled = false
+      trim_at = .hodgepodge.dev
+    '';
   };
 
   # This value determines the Home Manager release that your
