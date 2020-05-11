@@ -280,6 +280,8 @@
       [hostname]
       disabled = false
       trim_at = ".hodgepodge.dev"
+      [nix_shell]
+      use_name = true
     '';
   };
 

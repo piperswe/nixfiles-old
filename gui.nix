@@ -139,7 +139,6 @@ in {
   xsession = ifLinux {
     enable = true;
     initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
-    #windowManager.command = "${pkgs.sway}/bin/sway";
     windowManager.i3 = {
       enable = true;
       config = i3Config;
@@ -150,6 +149,14 @@ in {
     enable = true;
     config = i3Config;
   };
+
+  programs.fish.loginShellInit = ifLinux ''
+    # If running from tty1 start sway
+    set TTY1 (tty)
+    if test -z "$DISPLAY"; and test $TTY1 = "/dev/tty1"
+      exec ${pkgs.sway}/bin/sway
+    end
+  '';
 
   # If this doesn't work, add this to your system configuration:
   # programs.dconf.enable = true;
