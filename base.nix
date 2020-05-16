@@ -11,6 +11,9 @@
     mosh
     links
     file
+    screen
+    unzip
+    bind
     (lib.mkIf stdenv.isLinux sshfs)
   ];
 

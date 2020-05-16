@@ -22,7 +22,7 @@ mp3-encoder = pkgs.writeScriptBin "mp3-encoder" ''
   mkdir -p "$(dirname "$2")"
   nice ${ffmpeg}/bin/ffmpeg -y -i "$1" -vn -c:a libmp3lame -V 0 -movflags +faststart -af aresample=resampler=soxr -ar 44100 "$2"
 '';
-sync-music = pkgs.writeScriptBin "sync-music" ''
+sync-ipod = pkgs.writeScriptBin "sync-music" ''
   #!${pkgs.bash}/bin/bash
   set -euo pipefail
   shopt -s globstar
@@ -34,20 +34,38 @@ sync-music = pkgs.writeScriptBin "sync-music" ''
   ${pkgs.rsync}/bin/rsync -rpthu --inplace --delete --info=progress2 ~/Music/playlists/ "$IPOD/Playlists/"
   ${pkgs.rsync}/bin/rsync -rpthu --inplace --delete --info=progress2 ~/Music/ "$IPOD/Music/"
 '';
+sync-mediaserver = pkgs.writeScriptBin "sync-mediaserver" ''
+  #!${pkgs.bash}/bin/bash
+  set -euo pipefail
+  shopt -s globstar
+
+  ${pkgs.rsync}/bin/rsync -avhP --delete --info=progress2 ~/Music/ root@[2602:fd64:0:1:7285:c2ff:fed4:983a]:/mediaserver/music/
+'';
+customMakemkv = pkgs.qt5.callPackage ./makemkv.nix {};
 in {
+  nixpkgs.overlays = [
+    (self: super: {
+      vlc = super.vlc.override {
+        libbluray = super.libbluray.override {
+          withAACS = true;
+          withBDplus = true;
+        };
+      };
+    })
+  ];
+
   home.packages = with pkgs; [
     rubyripper
     cdrdao
     flac
     imagemagick
-    makemkv
+    customMakemkv
     ccextractor
     aac-encoder
     mp3-encoder
-    sync-music
+    sync-ipod
+    sync-mediaserver
   ];
-
-  home.file.".config/rubyripper/settings".source = ./rubyripper.ini;
 
   services.syncthing.enable = true;
 
@@ -77,7 +95,10 @@ in {
       directory = dir;
       library = "${dir}/musiclibrary.db";
       asciify_paths = true;
-      import.move = true;
+      import = {
+        move = true;
+        timid = true;
+      };
       plugins = "fetchart embedart lyrics lastgenre chroma convert replaygain acousticbrainz mbsync mbcollection absubmit web bpd discogs badfiles smartplaylist playlist";
       lyrics.auto = true;
       absubmit.auto = true;
@@ -123,5 +144,12 @@ in {
         ];
       };
     };
+  };
+
+  home.file = let keydb = pkgs.callPackage ./keydb-eng.nix {}; in {
+    ".config/aacs/keydb.cfg".source = keydb;
+    ".MakeMKV/KEYDB.cfg".source = keydb;
+    ".MakeMKV/keys_hashed.txt".source = ./keys_hashed.txt;
+    ".config/rubyripper/settings".source = ./rubyripper.ini;
   };
 }

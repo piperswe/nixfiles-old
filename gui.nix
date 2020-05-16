@@ -8,8 +8,9 @@ ifLinux = lib.mkIf pkgs.stdenv.isLinux;
 i3status-rust = pkgs.callPackage ./i3status-rust.nix {};
 i3Config = {
   fonts = [ "Monoid Nerd Font" ];
+  modifier = "Mod4";
   keybindings = lib.mkOptionDefault {
-    "Mod1+p" = "exec rofi -show drun";
+    "Mod4+p" = "exec rofi -show drun";
   };
   bars = [
     {
@@ -46,6 +47,7 @@ i3Config = {
     };
   };
 };
+customSteam = pkgs.steam.override { nativeOnly = true; };
 in {
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
@@ -53,26 +55,24 @@ in {
     (ifLinux minecraft)
     (ifLinux multimc)
     (ifLinux obs-studio)
-    (ifLinux (steam.override { nativeOnly = true; }))
+    (ifLinux customSteam)
+    (ifLinux customSteam.run)
     (ifLinux xfce.thunar)
     (ifLinux xfce.thunar-archive-plugin)
     (ifLinux gnome3.file-roller)
     (ifLinux jetbrains.idea-ultimate)
-    (ifLinux android-studio)
     (ifLinux riot-desktop)
     (ifLinux tdesktop)
     (ifLinux discord)
-    (ifLinux zoom-us)
     (ifLinux vlc)
     (ifLinux gnome3.gnome-keyring)
     mpv
     (ifLinux keybase-gui)
+    qdirstat
+    (ifLinux spotify)
 
     nerdfonts
-    powerline-fonts
     ibm-plex
-    fira-code
-    fira-code-symbols
 
     (ifLinux abiword)
     (ifLinux gnumeric)
