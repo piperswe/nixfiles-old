@@ -12,7 +12,6 @@
 , xorg
 , makeDesktopItem
 }:
-
 let
   version = "1.15.1";
   # Using two URLs as the first one will break as soon as a new version is released

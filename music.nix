@@ -1,5 +1,4 @@
 { config, pkgs, fetchurl, ... }:
-
 let
   dir = "${config.home.homeDirectory}/Music";
   secrets = import ./secrets.nix;
@@ -42,7 +41,7 @@ let
 
     ${pkgs.rsync}/bin/rsync -avhP --delete --info=progress2 ~/Music/ root@[2602:fd64:0:1:7285:c2ff:fed4:983a]:/mediaserver/music/
   '';
-  customMakemkv = pkgs.qt5.callPackage ./makemkv.nix {};
+  customMakemkv = pkgs.qt5.callPackage ./makemkv.nix { };
 in
 {
   nixpkgs.overlays = [
@@ -150,9 +149,10 @@ in
     };
   };
 
-  home.file = let
-    keydb = pkgs.callPackage ./keydb-eng.nix {};
-  in
+  home.file =
+    let
+      keydb = pkgs.callPackage ./keydb-eng.nix { };
+    in
     {
       ".config/aacs/keydb.cfg".source = keydb;
       ".MakeMKV/KEYDB.cfg".source = keydb;
