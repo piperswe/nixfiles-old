@@ -7,7 +7,7 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "greshake";
     repo = pname;
-    rev = "${version}";
+    rev = version;
     sha256 = "0qj5y2ylfma9x58jc40kxngyah5bafkqnhl2zpy96xaxy0bkizga";
   };
 
@@ -24,7 +24,6 @@ rustPlatform.buildRustPackage rec {
     description = "Very resource-friendly and feature-rich replacement for i3status";
     homepage = "https://github.com/greshake/i3status-rust";
     license = licenses.gpl3;
-    maintainers = with maintainers; [ backuitist globin ma27 ];
     platforms = platforms.linux;
   };
 }

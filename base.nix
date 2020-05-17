@@ -26,7 +26,7 @@
         sha256 = "0s20vjm8irlbw8z611qwfxwr6m1zqq9l3zr2dh65dl95b6v1k3fd";
       };
 
-      cargoSha256 = "1jgr4i3bdgjhfy6af1m34qh6fkzf64prldf2d4vc1rii037zvx7s";
+      cargoSha256 = "051b2ri2svhv1mfi49rki8rbnyngssqrr78mbc21cdlxp419lsw5";
 
       meta = with stdenv.lib; {
         description = "Sort of like top or htop but with zoom-able charts, network, and disk usage";
