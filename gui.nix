@@ -1,54 +1,56 @@
 { config, pkgs, lib, ... }:
 
-let desktopBackground = pkgs.fetchurl {
-  url = "https://images.unsplash.com/photo-1555021890-2a10a279e77d";
-  sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
-};
-ifLinux = lib.mkIf pkgs.stdenv.isLinux;
-i3status-rust = pkgs.callPackage ./i3status-rust.nix {};
-i3Config = {
-  fonts = [ "Monoid Nerd Font" ];
-  modifier = "Mod4";
-  keybindings = lib.mkOptionDefault {
-    "Mod4+p" = "exec rofi -show drun";
+let
+  desktopBackground = pkgs.fetchurl {
+    url = "https://images.unsplash.com/photo-1555021890-2a10a279e77d";
+    sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
   };
-  bars = [
-    {
-      fonts = [ "Monoid Nerd Font" ];
-      position = "bottom";
-      statusCommand = "${i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
-      colors = {
-        background = "#282828";
-        statusline = "#ebdbb2";
+  ifLinux = lib.mkIf pkgs.stdenv.isLinux;
+  i3status-rust = pkgs.callPackage ./i3status-rust.nix {};
+  i3Config = {
+    fonts = [ "Monoid Nerd Font" ];
+    modifier = "Mod4";
+    keybindings = lib.mkOptionDefault {
+      "Mod4+p" = "exec rofi -show drun";
+    };
+    bars = [
+      {
+        fonts = [ "Monoid Nerd Font" ];
+        position = "bottom";
+        statusCommand = "${i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+        colors = {
+          background = "#282828";
+          statusline = "#ebdbb2";
+        };
+      }
+    ];
+    colors = {
+      focused = rec {
+        border = "#458588";
+        text = "#ebdbb2";
+        background = border;
+        indicator = border;
+        childBorder = border;
       };
-    }
-  ];
-  colors = {
-    focused = rec {
-      border = "#458588";
-      text = "#ebdbb2";
-      background = border;
-      indicator = border;
-      childBorder = border;
-    };
-    focusedInactive = rec {
-      border = "#83a598";
-      text = "#ebdbb2";
-      background = border;
-      indicator = border;
-      childBorder = border;
-    };
-    unfocused = rec {
-      border = "#928374";
-      text = "#ebdbb2";
-      background = border;
-      indicator = border;
-      childBorder = border;
+      focusedInactive = rec {
+        border = "#83a598";
+        text = "#ebdbb2";
+        background = border;
+        indicator = border;
+        childBorder = border;
+      };
+      unfocused = rec {
+        border = "#928374";
+        text = "#ebdbb2";
+        background = border;
+        indicator = border;
+        childBorder = border;
+      };
     };
   };
-};
-customSteam = pkgs.steam.override { nativeOnly = true; };
-in {
+  customSteam = pkgs.steam.override { nativeOnly = true; };
+in
+{
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     (ifLinux cantata)

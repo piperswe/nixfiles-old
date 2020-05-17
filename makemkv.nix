@@ -1,6 +1,16 @@
-{ stdenv, mkDerivation, fetchurl, autoPatchelfHook
-, ffmpeg, openssl, qtbase, zlib, pkgconfig, jdk
-, lib, xorg, makeDesktopItem
+{ stdenv
+, mkDerivation
+, fetchurl
+, autoPatchelfHook
+, ffmpeg
+, openssl
+, qtbase
+, zlib
+, pkgconfig
+, jdk
+, lib
+, xorg
+, makeDesktopItem
 }:
 
 let
@@ -20,7 +30,8 @@ let
     ];
     sha256 = "0rm1zykqagy2g8hb7pjrc6akdsym8pgdnx66hnna161jbah3sssy";
   };
-in mkDerivation {
+in
+mkDerivation {
   pname = "makemkv";
   inherit version;
 
@@ -71,4 +82,3 @@ in mkDerivation {
     maintainers = [ maintainers.titanous ];
   };
 }
-
