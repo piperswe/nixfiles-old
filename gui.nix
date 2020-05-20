@@ -78,6 +78,7 @@ in
 
     (ifLinux abiword)
     (ifLinux gnumeric)
+    mupdf
   ];
 
   programs.firefox = ifLinux {
