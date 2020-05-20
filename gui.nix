@@ -5,8 +5,6 @@ let
     sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
   };
   ifLinux = lib.mkIf pkgs.stdenv.isLinux;
-  # i3status-rust = pkgs.callPackage ./i3status-rust.nix { };
-  i3status-rust = pkgs.i3status-rust;
   i3Config = {
     fonts = [ "Monoid Nerd Font" ];
     modifier = "Mod4";
@@ -17,7 +15,7 @@ let
       {
         fonts = [ "Monoid Nerd Font" ];
         position = "bottom";
-        statusCommand = "${i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+        statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
         colors = {
           background = "#282828";
           statusline = "#ebdbb2";
