@@ -20,6 +20,7 @@
     (import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix
     nixpkgs-review
     (lib.mkIf stdenv.isLinux sshfs)
+    clj-kondo
   ];
 
   home.sessionVariables = {
@@ -30,8 +31,13 @@
 
   home.file.links =
     let
-      font = "${pkgs.nerdfonts}/share/fonts/truetype/NerdFonts/Fira Code Regular Nerd Font Complete.otf";
-      boldFont = "${pkgs.nerdfonts}/share/fonts/truetype/NerdFonts/Fira Code Bold Nerd Font Complete.otf";
+      fonts = pkgs.nerdfonts.override {
+        fonts = [
+          "Monoid"
+        ];
+      };
+      font = "${fonts}/share/fonts/truetype/NerdFonts/Monoid Regular Nerd Font Complete.otf";
+      boldFont = "${fonts}/share/fonts/truetype/NerdFonts/Monoid Bold Nerd Font Complete.otf";
     in
     {
       target = ".links/links.cfg";
@@ -480,6 +486,17 @@
         filetypes = [
           "nix"
         ];
+      };
+      elm = {
+        command = "${pkgs.elmPackages.elm-language-server}/bin/elm-language-server";
+        filetypes = [ "elm" ];
+        rootPatterns = [ "elm.json" ];
+        initializationOptions = {
+          elmPath = "${pkgs.elmPackages.elm}/bin/elm";
+          elmFormatPath = "${pkgs.elmPackages.elm-format}/bin/elm-format";
+          elmTestPath = "${pkgs.elmPackages.elm-test}/bin/elm-test";
+          elmAnalyseTrigger = "change";
+        };
       };
     };
   };

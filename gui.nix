@@ -61,6 +61,7 @@ in
     (ifLinux xfce.thunar-archive-plugin)
     (ifLinux gnome3.file-roller)
     (ifLinux jetbrains.idea-ultimate)
+    (ifLinux jetbrains.datagrip)
     (ifLinux riot-desktop)
     (ifLinux tdesktop)
     (ifLinux discord)
@@ -71,7 +72,11 @@ in
     qdirstat
     (ifLinux spotify)
 
-    nerdfonts
+    (nerdfonts.override {
+      fonts = [
+        "Monoid"
+      ];
+    })
     ibm-plex
 
     (ifLinux abiword)
@@ -174,6 +179,68 @@ in
     font = {
       name = "Monoid Nerd Font";
     };
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscodium;
+    userSettings = {
+      "extensions.autoUpdate" = false;
+      "editor.rulers" = [ 72 ];
+    };
+    extensions = with pkgs; with vscode-extensions; [
+      bbenoist.Nix
+      justusadam.language-haskell
+      ms-vscode.cpptools
+      ms-vscode-remote.remote-ssh
+      ms-python.python
+      scala-lang.scala
+      skyapps.fish-vscode
+      (vscode-utils.buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "rust";
+          publisher = "rust-lang";
+          version = "0.7.8";
+          sha256 = "039ns854v1k4jb9xqknrjkj8lf62nfcpfn0716ancmjc4f0xlzb3";
+        };
+        meta = {
+          license = with stdenv.lib.licenses; [ mit asl20 ];
+        };
+      })
+      (vscode-utils.buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "elm-ls-vscode";
+          publisher = "Elmtooling";
+          version = "0.10.2";
+          sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
+        };
+        meta = {
+          license = stdenv.lib.licenses.mit;
+        };
+      })
+      (vscode-utils.buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "calva";
+          publisher = "betterthantomorrow";
+          version = "2.0.101";
+          sha256 = "17p9mwr3rs052snflraiqrid8kgql5972av3q6dp7bplpc2bnhzk";
+        };
+        meta = {
+          license = stdenv.lib.licenses.mit;
+        };
+      })
+      (vscode-utils.buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "clj-kondo";
+          publisher = "borkdude";
+          version = "2020.5.9";
+          sha256 = "0jnnkrmnjzr1fhvfwsdqwimnm2r7vwn8s7sv8n14i1vp1lm3dw3d";
+        };
+        meta = {
+          license = stdenv.lib.licenses.epl10;
+        };
+      })
+    ];
   };
 
   xdg.mimeApps = {
