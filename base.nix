@@ -413,14 +413,14 @@
   services.keybase.enable = pkgs.stdenv.isLinux;
   services.kbfs.enable = pkgs.stdenv.isLinux;
 
-  programs.ledger = {
-    enable = true;
-    file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
-    priceDB = "${config.home.homeDirectory}/Documents/ledger/prices.journal";
-    extraConfig = ''
-      --sort date
-    '';
-  };
+  #programs.ledger = {
+  #  enable = true;
+  #  file = "${config.home.homeDirectory}/Documents/ledger/data.journal";
+  #  priceDB = "${config.home.homeDirectory}/Documents/ledger/prices.journal";
+  #  extraConfig = ''
+  #    --sort date
+  #  '';
+  #};
 
   home.file = {
     ".lein/profiles.clj".text = ''
