@@ -20,7 +20,7 @@
     (import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix
     nixpkgs-review
     (lib.mkIf stdenv.isLinux sshfs)
-    clj-kondo
+    (import ./clj-kondo.nix)
   ];
 
   home.sessionVariables = {
