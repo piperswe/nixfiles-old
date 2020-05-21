@@ -72,7 +72,7 @@ in
     qdirstat
     (ifLinux spotify)
 
-    (nerdfonts.override {
+    (pkgs.callPackage ./nerdfonts {
       fonts = [
         "Monoid"
       ];

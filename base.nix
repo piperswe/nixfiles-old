@@ -31,7 +31,7 @@
 
   home.file.links =
     let
-      fonts = pkgs.nerdfonts.override {
+      fonts = pkgs.callPackage ./nerdfonts {
         fonts = [
           "Monoid"
         ];
