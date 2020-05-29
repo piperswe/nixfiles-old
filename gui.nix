@@ -62,6 +62,7 @@ in
     (ifLinux gnome3.file-roller)
     (ifLinux jetbrains.idea-ultimate)
     (ifLinux jetbrains.datagrip)
+    (ifLinux jetbrains.goland)
     (ifLinux riot-desktop)
     (ifLinux tdesktop)
     (ifLinux discord)
@@ -71,6 +72,10 @@ in
     (ifLinux keybase-gui)
     qdirstat
     (ifLinux spotify)
+    (ifLinux postman)
+    (netsurf.browser.override {
+      uilib = "gtk";
+    })
 
     (pkgs.callPackage ./nerdfonts {
       fonts = [
@@ -78,10 +83,29 @@ in
       ];
     })
     ibm-plex
+    noto-fonts-cjk
+    noto-fonts-emoji
+    unifont
+    unifont_upper
+    freefont_ttf
+    (pkgs.stdenv.mkDerivation {
+      name = "open-sans-emoji";
+      src = builtins.fetchTarball {
+        url = "https://github.com/MorbZ/OpenSansEmoji/archive/e76f1200b1892f1e154fe844671ac391ed433f9f.tar.gz";
+        sha256 = "00kq9x1v9mmgjvz1p7al3kgpwk6jvgdwhxv5y45c1q0ssyi0ihiw";
+      };
+      installPhase = ''
+        mkdir -p $out/share/fonts/{truetype,opentype}
+        cp $src/OpenSansEmoji.otf $out/share/fonts/opentype
+        cp $src/OpenSansEmoji.ttf $out/share/fonts/truetype
+      '';
+    })
 
-    (ifLinux abiword)
-    (ifLinux gnumeric)
+    libreoffice-fresh
     mupdf
+
+    virt-manager
+    (pkgs.callPackage ./github-classroom-assistant.nix {})
   ];
 
   programs.firefox = ifLinux {
@@ -182,42 +206,45 @@ in
   };
 
   programs.vscode = {
-    enable = true;
-    package = pkgs.vscodium;
+    enable = false;
     userSettings = {
       "extensions.autoUpdate" = false;
+      "extensions.autoCheckUpdates" = false;
+      "update.showReleaseNotes" = false;
+      "update.mode" = "none";
       "editor.rulers" = [ 72 ];
+      "window.titleBarStyle" = "custom";
     };
     extensions = with pkgs; with vscode-extensions; [
-      bbenoist.Nix
-      justusadam.language-haskell
-      ms-vscode.cpptools
-      ms-vscode-remote.remote-ssh
-      ms-python.python
-      scala-lang.scala
-      skyapps.fish-vscode
-      (vscode-utils.buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "rust";
-          publisher = "rust-lang";
-          version = "0.7.8";
-          sha256 = "039ns854v1k4jb9xqknrjkj8lf62nfcpfn0716ancmjc4f0xlzb3";
-        };
-        meta = {
-          license = with stdenv.lib.licenses; [ mit asl20 ];
-        };
-      })
-      (vscode-utils.buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "elm-ls-vscode";
-          publisher = "Elmtooling";
-          version = "0.10.2";
-          sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
-        };
-        meta = {
-          license = stdenv.lib.licenses.mit;
-        };
-      })
+      #bbenoist.Nix
+      #justusadam.language-haskell
+      #ms-vscode.cpptools
+      #ms-vscode-remote.remote-ssh
+      #ms-python.python
+      #scala-lang.scala
+      #skyapps.fish-vscode
+      #(vscode-utils.buildVscodeMarketplaceExtension {
+      #  mktplcRef = {
+      #    name = "rust";
+      #    publisher = "rust-lang";
+      #    version = "0.7.8";
+      #    sha256 = "039ns854v1k4jb9xqknrjkj8lf62nfcpfn0716ancmjc4f0xlzb3";
+      #  };
+      #  meta = {
+      #    license = with stdenv.lib.licenses; [ mit asl20 ];
+      #  };
+      #})
+      #(vscode-utils.buildVscodeMarketplaceExtension {
+      #  mktplcRef = {
+      #    name = "elm-ls-vscode";
+      #    publisher = "Elmtooling";
+      #    version = "0.10.2";
+      #    sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
+      #  };
+      #  meta = {
+      #    license = stdenv.lib.licenses.mit;
+      #  };
+      #})
       (vscode-utils.buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "calva";
@@ -242,6 +269,8 @@ in
       })
     ];
   };
+
+  services.gpg-agent.pinentryFlavor = lib.mkForce "gtk2";
 
   xdg.mimeApps = {
     enable = true;
