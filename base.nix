@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    _1password
+    #_1password
     python
     leiningen
     wget
@@ -15,16 +15,15 @@
     unzip
     bind
     nixpkgs-fmt
-    (import ./zenith.nix)
+    #(import ./zenith.nix)
     nodejs
-    (import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix
+    #(import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix
     nixpkgs-review
     (lib.mkIf stdenv.isLinux sshfs)
     (import ./clj-kondo.nix)
   ];
 
   home.sessionVariables = {
-    TERMINAL = "${pkgs.alacritty}/bin/alacritty";
     EDITOR = "nvim";
     TMUX_TMPDIR = "$HOME/.tmp/tmux";
   };
@@ -352,6 +351,7 @@
   programs.fish = {
     enable = true;
     shellInit = ''
+      fenv source $HOME/.nix-profile/etc/profile.d/nix.sh
       set -gx EDITOR nvim
       alias ssh "${pkgs.ssh-ident}/bin/ssh-ident"
     '';
@@ -444,24 +444,24 @@
 
   xdg.configFile."nvim/coc-settings.json".text = builtins.toJSON {
     languageserver = {
-      haskell = {
-        command =
-          let all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") { };
-          in "${all-hies.selection { selector = p: { inherit (p) ghc844 ghc865 ghc882; }; }}/bin/hie-wrapper";
-        args = [ "--lsp" ];
-        rootPatterns = [
-          "*.cabal"
-          "stack.yaml"
-          "cabal.project"
-          "package.yaml"
-        ];
-        filetypes = [
-          "hs"
-          "lhs"
-          "haskell"
-        ];
-        initializationOptions.languageServerHaskell = { };
-      };
+      #haskell = {
+      #  command =
+      #    let all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") { };
+      #    in "${all-hies.selection { selector = p: { inherit (p) ghc844 ghc865 ghc882; }; }}/bin/hie-wrapper";
+      #  args = [ "--lsp" ];
+      #  rootPatterns = [
+      #    "*.cabal"
+      #    "stack.yaml"
+      #    "cabal.project"
+      #    "package.yaml"
+      #  ];
+      #  filetypes = [
+      #    "hs"
+      #    "lhs"
+      #    "haskell"
+      #  ];
+      #  initializationOptions.languageServerHaskell = { };
+      #};
       clojure = {
         command = "${pkgs.jre}/bin/java";
         args = [ "-Xmx1g" "-server" "-Dclojure-lsp.version=0.1.0-SNAPSHOT" "-jar" "${pkgs.clojure-lsp}/bin/clojure-lsp" ];
@@ -487,17 +487,17 @@
           "nix"
         ];
       };
-      elm = {
-        command = "${pkgs.elmPackages.elm-language-server}/bin/elm-language-server";
-        filetypes = [ "elm" ];
-        rootPatterns = [ "elm.json" ];
-        initializationOptions = {
-          elmPath = "${pkgs.elmPackages.elm}/bin/elm";
-          elmFormatPath = "${pkgs.elmPackages.elm-format}/bin/elm-format";
-          elmTestPath = "${pkgs.elmPackages.elm-test}/bin/elm-test";
-          elmAnalyseTrigger = "change";
-        };
-      };
+      #elm = {
+      #  command = "${pkgs.elmPackages.elm-language-server}/bin/elm-language-server";
+      #  filetypes = [ "elm" ];
+      #  rootPatterns = [ "elm.json" ];
+      #  initializationOptions = {
+      #    elmPath = "${pkgs.elmPackages.elm}/bin/elm";
+      #    elmFormatPath = "${pkgs.elmPackages.elm-format}/bin/elm-format";
+      #    elmTestPath = "${pkgs.elmPackages.elm-test}/bin/elm-test";
+      #    elmAnalyseTrigger = "change";
+      #  };
+      #};
     };
   };
 
@@ -509,5 +509,5 @@
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version
   # changes in each release.
-  home.stateVersion = "20.03";
+  #home.stateVersion = "20.03";
 }

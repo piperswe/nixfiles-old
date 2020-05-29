@@ -5,11 +5,12 @@ let
     sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
   };
   ifLinux = lib.mkIf pkgs.stdenv.isLinux;
-  i3Config = {
+  i3Config = rec {
     fonts = [ "Monoid Nerd Font" ];
     modifier = "Mod4";
     keybindings = lib.mkOptionDefault {
-      "Mod4+p" = "exec rofi -show drun";
+      "${modifier}+p" = "exec rofi -show drun";
+      "${modifier}+Return" = "exec ${pkgs.xfce.terminal}/bin/xfce4-terminal";
     };
     bars = [
       {
@@ -49,28 +50,29 @@ let
   customSteam = pkgs.steam.override { nativeOnly = true; };
 in
 {
+  home.sessionVariables.TERMINAL = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     (ifLinux cantata)
     (ifLinux minecraft)
     (ifLinux multimc)
-    (ifLinux obs-studio)
-    (ifLinux customSteam)
-    (ifLinux customSteam.run)
+    #(ifLinux obs-studio)
+    #(ifLinux customSteam)
+    #(ifLinux customSteam.run)
     (ifLinux xfce.thunar)
     (ifLinux xfce.thunar-archive-plugin)
     (ifLinux gnome3.file-roller)
-    (ifLinux jetbrains.idea-ultimate)
-    (ifLinux jetbrains.datagrip)
+    #(ifLinux jetbrains.idea-ultimate)
+    #(ifLinux jetbrains.datagrip)
     (ifLinux riot-desktop)
     (ifLinux tdesktop)
-    (ifLinux discord)
+    #(ifLinux discord)
     (ifLinux vlc)
     (ifLinux gnome3.gnome-keyring)
     mpv
     (ifLinux keybase-gui)
     qdirstat
-    (ifLinux spotify)
+    #(ifLinux spotify)
 
     (pkgs.callPackage ./nerdfonts {
       fonts = [
@@ -143,7 +145,7 @@ in
   };
 
   xsession = ifLinux {
-    enable = true;
+    enable = false;
     initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
     windowManager.i3 = {
       enable = true;
@@ -152,17 +154,17 @@ in
   };
 
   wayland.windowManager.sway = ifLinux {
-    enable = true;
+    enable = false;
     config = i3Config;
   };
 
-  programs.fish.loginShellInit = ifLinux ''
-    # If running from tty1 start sway
-    set TTY1 (tty)
-    if test -z "$DISPLAY"; and test $TTY1 = "/dev/tty1"
-      exec ${pkgs.sway}/bin/sway
-    end
-  '';
+  #programs.fish.loginShellInit = ifLinux ''
+  #  # If running from tty1 start sway
+  #  set TTY1 (tty)
+  #  if test -z "$DISPLAY"; and test $TTY1 = "/dev/tty1"
+  #    exec ${pkgs.sway}/bin/sway
+  #  end
+  #'';
 
   # If this doesn't work, add this to your system configuration:
   # programs.dconf.enable = true;
@@ -182,7 +184,7 @@ in
   };
 
   programs.vscode = {
-    enable = true;
+    enable = false;
     package = pkgs.vscodium;
     userSettings = {
       "extensions.autoUpdate" = false;
@@ -190,10 +192,10 @@ in
     };
     extensions = with pkgs; with vscode-extensions; [
       bbenoist.Nix
-      justusadam.language-haskell
-      ms-vscode.cpptools
-      ms-vscode-remote.remote-ssh
-      ms-python.python
+      #justusadam.language-haskell
+      #ms-vscode.cpptools
+      #ms-vscode-remote.remote-ssh
+      #ms-python.python
       scala-lang.scala
       skyapps.fish-vscode
       (vscode-utils.buildVscodeMarketplaceExtension {
@@ -207,17 +209,17 @@ in
           license = with stdenv.lib.licenses; [ mit asl20 ];
         };
       })
-      (vscode-utils.buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "elm-ls-vscode";
-          publisher = "Elmtooling";
-          version = "0.10.2";
-          sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
-        };
-        meta = {
-          license = stdenv.lib.licenses.mit;
-        };
-      })
+      #(vscode-utils.buildVscodeMarketplaceExtension {
+      #  mktplcRef = {
+      #    name = "elm-ls-vscode";
+      #    publisher = "Elmtooling";
+      #    version = "0.10.2";
+      #    sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
+      #  };
+      #  meta = {
+      #    license = stdenv.lib.licenses.mit;
+      #  };
+      #})
       (vscode-utils.buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "calva";

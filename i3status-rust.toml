@@ -2,7 +2,8 @@ theme = "gruvbox-dark"
 icons = "awesome"
 
 [[block]]
-block = "focused_window"
+block = "battery"
+device = "cw2015-battery"
 
 [[block]]
 block = "disk_space"
