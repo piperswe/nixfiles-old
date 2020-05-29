@@ -1,8 +1,9 @@
 { config, pkgs, lib, fetchurl, ... }:
 
-{
+let ifLinuxAMD64 = lib.mkIf (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64);
+in {
   home.packages = with pkgs; [
-    #_1password
+    (ifLinuxAMD64 _1password)
     python
     leiningen
     wget
@@ -15,12 +16,16 @@
     unzip
     bind
     nixpkgs-fmt
-    #(import ./zenith.nix)
+    (ifLinuxAMD64 (import ./zenith.nix))
     nodejs
-    #(import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix
+    (ifLinuxAMD64 (import (builtins.fetchTarball "https://cachix.org/api/v1/install") { }).cachix)
     nixpkgs-review
     (lib.mkIf stdenv.isLinux sshfs)
     (import ./clj-kondo.nix)
+    fd
+    du-dust
+    ripgrep
+    groff
   ];
 
   home.sessionVariables = {
@@ -163,6 +168,7 @@
   services.gpg-agent = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     enableSshSupport = true;
+    pinentryFlavor = lib.mkDefault "curses";
   };
 
   programs.git = {
@@ -189,6 +195,8 @@
       rust-vim
       coc-nvim
       coc-json
+      coc-rls
+      (ifLinuxAMD64 vim-go)
       nerdtree
     ];
     extraConfig = ''
@@ -443,6 +451,7 @@
   };
 
   xdg.configFile."nvim/coc-settings.json".text = builtins.toJSON {
+    "rust-client.disableRustup" = true;
     languageserver = {
       #haskell = {
       #  command =

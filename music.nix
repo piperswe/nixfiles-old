@@ -39,7 +39,7 @@ let
     set -euo pipefail
     shopt -s globstar
 
-    ${pkgs.rsync}/bin/rsync -avhP --delete --info=progress2 ~/Music/ root@[2602:fd64:0:1:7285:c2ff:fed4:983a]:/mediaserver/music/
+    ${pkgs.rsync}/bin/rsync -avhP --delete --info=progress2 ~/Music/ root@media.psrv.hodgepodge.dev:/mediaserver/music/
   '';
   customMakemkv = pkgs.qt5.callPackage ./makemkv.nix { };
 in
@@ -76,6 +76,9 @@ in
     enable = true;
     musicDirectory = "${config.home.homeDirectory}/Music";
     playlistDirectory = "${config.home.homeDirectory}/Music/playlists";
+    extraConfig = ''
+      auto_update "yes"
+    '';
   };
   services.mpdris2.enable = true;
 

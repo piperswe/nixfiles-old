@@ -5,6 +5,8 @@ let
     sha256 = "126p15w8li4gzsa9qkjyzi1rkhj6yyyj9y8wdgi3fhlpq227pn9n";
   };
   ifLinux = lib.mkIf pkgs.stdenv.isLinux;
+  ifAMD64 = lib.mkIf pkgs.stdenv.isx86_64;
+  ifLinuxAMD64 = lib.mkIf (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64);
   i3Config = rec {
     fonts = [ "Monoid Nerd Font" ];
     modifier = "Mod4";
@@ -54,25 +56,30 @@ in
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     (ifLinux cantata)
-    (ifLinux minecraft)
-    (ifLinux multimc)
-    #(ifLinux obs-studio)
-    #(ifLinux customSteam)
-    #(ifLinux customSteam.run)
+    (ifLinuxAMD64 minecraft)
+    (ifLinuxAMD64 multimc)
+    (ifLinuxAMD64 obs-studio)
+    (ifLinuxAMD64 customSteam)
+    (ifLinuxAMD64 customSteam.run)
     (ifLinux xfce.thunar)
     (ifLinux xfce.thunar-archive-plugin)
     (ifLinux gnome3.file-roller)
-    #(ifLinux jetbrains.idea-ultimate)
-    #(ifLinux jetbrains.datagrip)
+    (ifLinuxAMD64 jetbrains.idea-ultimate)
+    (ifLinuxAMD64 jetbrains.datagrip)
+    (ifLinuxAMD64 jetbrains.goland)
     (ifLinux riot-desktop)
     (ifLinux tdesktop)
-    #(ifLinux discord)
+    (ifLinuxAMD64 discord)
     (ifLinux vlc)
     (ifLinux gnome3.gnome-keyring)
     mpv
     (ifLinux keybase-gui)
     qdirstat
-    #(ifLinux spotify)
+    (ifLinuxAMD64 spotify)
+    (ifLinuxAMD64 postman)
+    (netsurf.browser.override {
+      uilib = "gtk";
+    })
 
     (pkgs.callPackage ./nerdfonts {
       fonts = [
@@ -80,10 +87,29 @@ in
       ];
     })
     ibm-plex
+    noto-fonts-cjk
+    noto-fonts-emoji
+    unifont
+    unifont_upper
+    freefont_ttf
+    (pkgs.stdenv.mkDerivation {
+      name = "open-sans-emoji";
+      src = builtins.fetchTarball {
+        url = "https://github.com/MorbZ/OpenSansEmoji/archive/e76f1200b1892f1e154fe844671ac391ed433f9f.tar.gz";
+        sha256 = "00kq9x1v9mmgjvz1p7al3kgpwk6jvgdwhxv5y45c1q0ssyi0ihiw";
+      };
+      installPhase = ''
+        mkdir -p $out/share/fonts/{truetype,opentype}
+        cp $src/OpenSansEmoji.otf $out/share/fonts/opentype
+        cp $src/OpenSansEmoji.ttf $out/share/fonts/truetype
+      '';
+    })
 
-    (ifLinux abiword)
-    (ifLinux gnumeric)
+    libreoffice-fresh
     mupdf
+
+    virt-manager
+    (ifLinuxAMD64 (pkgs.callPackage ./github-classroom-assistant.nix {}))
   ];
 
   programs.firefox = ifLinux {
@@ -103,7 +129,7 @@ in
   };
 
   programs.alacritty = {
-    enable = true;
+    enable = ifLinuxAMD64 true;
     settings = {
       font = {
         normal.family = "Monoid Nerd Font";
@@ -145,7 +171,7 @@ in
   };
 
   xsession = ifLinux {
-    enable = false;
+    enable = ifAMD64 true;
     initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
     windowManager.i3 = {
       enable = true;
@@ -184,18 +210,21 @@ in
   };
 
   programs.vscode = {
-    enable = false;
-    package = pkgs.vscodium;
+    enable = ifLinuxAMD64 true;
     userSettings = {
       "extensions.autoUpdate" = false;
+      "extensions.autoCheckUpdates" = false;
+      "update.showReleaseNotes" = false;
+      "update.mode" = "none";
       "editor.rulers" = [ 72 ];
+      "window.titleBarStyle" = "custom";
     };
     extensions = with pkgs; with vscode-extensions; [
       bbenoist.Nix
-      #justusadam.language-haskell
-      #ms-vscode.cpptools
-      #ms-vscode-remote.remote-ssh
-      #ms-python.python
+      justusadam.language-haskell
+      ms-vscode.cpptools
+      ms-vscode-remote.remote-ssh
+      ms-python.python
       scala-lang.scala
       skyapps.fish-vscode
       (vscode-utils.buildVscodeMarketplaceExtension {
@@ -209,17 +238,17 @@ in
           license = with stdenv.lib.licenses; [ mit asl20 ];
         };
       })
-      #(vscode-utils.buildVscodeMarketplaceExtension {
-      #  mktplcRef = {
-      #    name = "elm-ls-vscode";
-      #    publisher = "Elmtooling";
-      #    version = "0.10.2";
-      #    sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
-      #  };
-      #  meta = {
-      #    license = stdenv.lib.licenses.mit;
-      #  };
-      #})
+      (vscode-utils.buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "elm-ls-vscode";
+          publisher = "Elmtooling";
+          version = "0.10.2";
+          sha256 = "17y52hapkfgbvy4g7gd1ac59v9ppspqa8cqgq21pskzcmgplcign";
+        };
+        meta = {
+          license = stdenv.lib.licenses.mit;
+        };
+      })
       (vscode-utils.buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "calva";
@@ -245,10 +274,12 @@ in
     ];
   };
 
+  services.gpg-agent.pinentryFlavor = lib.mkForce "gtk2";
+
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "x-scheme-handler/discord-472164236332630018" = "discord-472164236332630018.desktop";
+      "x-scheme-handler/discord-472164236332630018" = ifLinuxAMD64 "discord-472164236332630018.desktop";
       "text/html" = "firefox.desktop";
       "x-scheme-handler/http" = "firefox.desktop";
       "x-scheme-handler/https" = "firefox.desktop";
