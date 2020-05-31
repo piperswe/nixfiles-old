@@ -45,18 +45,18 @@ let
   customMakemkv = pkgs.qt5.callPackage ./makemkv.nix { };
 in
 {
-  nixpkgs.overlays = ifLinuxAMD64 [
-    (
-      self: super: {
-        vlc = super.vlc.override {
-          libbluray = super.libbluray.override {
-            withAACS = true;
-            withBDplus = true;
-          };
-        };
-      }
-    )
-  ];
+  #nixpkgs.overlays = ifLinuxAMD64 [
+  #  (
+  #    self: super: {
+  #      vlc = super.vlc.override {
+  #        libbluray = super.libbluray.override {
+  #          withAACS = true;
+  #          withBDplus = true;
+  #        };
+  #      };
+  #    }
+  #  )
+  #];
 
   home.packages = with pkgs; [
     (ifLinuxAMD64 rubyripper)
@@ -76,6 +76,7 @@ in
 
   services.mpd = {
     enable = true;
+    network.listenAddress = "any";
     musicDirectory = "${config.home.homeDirectory}/Music";
     playlistDirectory = "${config.home.homeDirectory}/Music/playlists";
     extraConfig = ''
