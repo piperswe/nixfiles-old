@@ -359,7 +359,9 @@ in {
   programs.fish = {
     enable = true;
     shellInit = ''
-      fenv source $HOME/.nix-profile/etc/profile.d/nix.sh
+      if test -e $HOME/.nix-profile/etc/profile.d/nix.sh
+        fenv source $HOME/.nix-profile/etc/profile.d/nix.sh
+      end
       set -gx EDITOR nvim
       alias ssh "${pkgs.ssh-ident}/bin/ssh-ident"
     '';

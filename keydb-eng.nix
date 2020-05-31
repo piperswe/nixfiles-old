@@ -5,7 +5,7 @@ stdenv.mkDerivation {
   inherit unzip;
   src = fetchzip {
     url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
-    sha256 = "19nismch2dzd6vc3a3qcjqpzf1cyr8mwlvazd61n664hs86glax7";
+    sha256 = "08q5zans05hvv7wk0jc9y5j4q1sf2916dbxbgmf0in3nvckrqi0g";
   };
   installPhase = ''
     cp $src/keydb.cfg $out

@@ -1,6 +1,7 @@
-{ config, pkgs, fetchurl, ... }:
+{ config, pkgs, lib, fetchurl, ... }:
 let
   dir = "${config.home.homeDirectory}/Music";
+  ifLinuxAMD64 = lib.mkIf (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64);
   secrets = import ./secrets.nix;
   ffmpeg = pkgs.ffmpeg-full.override {
     nonfreeLicensing = true;
@@ -44,7 +45,7 @@ let
   customMakemkv = pkgs.qt5.callPackage ./makemkv.nix { };
 in
 {
-  nixpkgs.overlays = [
+  nixpkgs.overlays = ifLinuxAMD64 [
     (
       self: super: {
         vlc = super.vlc.override {
@@ -58,19 +59,20 @@ in
   ];
 
   home.packages = with pkgs; [
-    rubyripper
-    cdrdao
+    (ifLinuxAMD64 rubyripper)
+    (ifLinuxAMD64 cdrdao)
     flac
     imagemagick
-    customMakemkv
-    ccextractor
-    aac-encoder
-    mp3-encoder
-    sync-ipod
-    sync-mediaserver
+    (ifLinuxAMD64 customMakemkv)
+    (ifLinuxAMD64 ccextractor)
+    (ifLinuxAMD64 aac-encoder)
+    (ifLinuxAMD64 mp3-encoder)
+    (ifLinuxAMD64 sync-ipod)
+    (ifLinuxAMD64 sync-mediaserver)
+    pavucontrol
   ];
 
-  services.syncthing.enable = true;
+  services.syncthing.enable = ifLinuxAMD64 true;
 
   services.mpd = {
     enable = true;
@@ -82,7 +84,7 @@ in
   };
   services.mpdris2.enable = true;
 
-  programs.fish.functions.ripcd = {
+  programs.fish.functions.ripcd = ifLinuxAMD64 {
     body = ''
       set TEMPDIR (mktemp -d)
       or exit 1
@@ -96,7 +98,7 @@ in
   };
 
   programs.beets = {
-    enable = true;
+    enable = false;
     settings = {
       directory = dir;
       library = "${dir}/musiclibrary.db";
@@ -152,7 +154,7 @@ in
     };
   };
 
-  home.file =
+  home.file = ifLinuxAMD64 (
     let
       keydb = pkgs.callPackage ./keydb-eng.nix { };
     in
@@ -161,5 +163,6 @@ in
       ".MakeMKV/KEYDB.cfg".source = keydb;
       ".MakeMKV/keys_hashed.txt".source = ./keys_hashed.txt;
       ".config/rubyripper/settings".source = ./rubyripper.ini;
-    };
+    }
+  );
 }

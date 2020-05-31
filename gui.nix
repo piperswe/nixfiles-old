@@ -7,12 +7,13 @@ let
   ifLinux = lib.mkIf pkgs.stdenv.isLinux;
   ifAMD64 = lib.mkIf pkgs.stdenv.isx86_64;
   ifLinuxAMD64 = lib.mkIf (pkgs.stdenv.isLinux && pkgs.stdenv.isx86_64);
+  terminal = if !pkgs.stdenv.isx86_64 then "${pkgs.termite}/bin/termite" else "${pkgs.alacritty}/bin/alacritty";
   i3Config = rec {
     fonts = [ "Monoid Nerd Font" ];
     modifier = "Mod4";
     keybindings = lib.mkOptionDefault {
       "${modifier}+p" = "exec rofi -show drun";
-      "${modifier}+Return" = "exec ${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      "${modifier}+Return" = "exec ${terminal}";
     };
     bars = [
       {
@@ -50,9 +51,13 @@ let
     };
   };
   customSteam = pkgs.steam.override { nativeOnly = true; };
+  netsurf-fb = pkgs.writeScriptBin "netsurf-fb" ''
+    #! ${pkgs.bash}/bin/bash
+    exec ${pkgs.netsurf.browser}/bin/netsurf-fb
+  '';
 in
 {
-  home.sessionVariables.TERMINAL = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+  home.sessionVariables.TERMINAL = terminal;
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     (ifLinux cantata)
@@ -77,6 +82,7 @@ in
     qdirstat
     (ifLinuxAMD64 spotify)
     (ifLinuxAMD64 postman)
+    netsurf-fb
     (netsurf.browser.override {
       uilib = "gtk";
     })
@@ -85,7 +91,8 @@ in
       fonts = [
         "Monoid"
       ];
-    })
+    }
+    )
     ibm-plex
     noto-fonts-cjk
     noto-fonts-emoji
@@ -109,7 +116,7 @@ in
     mupdf
 
     virt-manager
-    (ifLinuxAMD64 (pkgs.callPackage ./github-classroom-assistant.nix {}))
+    (ifLinuxAMD64 (pkgs.callPackage ./github-classroom-assistant.nix { }))
   ];
 
   programs.firefox = ifLinux {
@@ -128,8 +135,14 @@ in
     };
   };
 
+  programs.termite = {
+    enable = !pkgs.stdenv.isx86_64;
+    dynamicTitle = true;
+    font = "Monoid Nerd Font 12";
+  };
+
   programs.alacritty = {
-    enable = ifLinuxAMD64 true;
+    enable = pkgs.stdenv.isx86_64;
     settings = {
       font = {
         normal.family = "Monoid Nerd Font";
@@ -171,17 +184,37 @@ in
   };
 
   xsession = ifLinux {
-    enable = ifAMD64 true;
-    initExtra = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}" &'';
+    enable = true;
     windowManager.i3 = {
       enable = true;
-      config = i3Config;
+      config = i3Config // {
+        startup = [
+          {
+            command = ''${pkgs.feh}/bin/feh --no-fehbg --bg-scale "${desktopBackground}"'';
+            notification = false;
+          }
+        ];
+      };
     };
   };
 
+  home.file.".xinitrc" = {
+    text = ''
+      #! ${pkgs.bash}/bin/bash
+      exec bash ~/.xsession
+    '';
+    executable = true;
+  };
+
   wayland.windowManager.sway = ifLinux {
-    enable = false;
-    config = i3Config;
+    enable = true;
+    config = i3Config // {
+      startup = [
+        {
+          command = ''${pkgs.swaybg}/bin/swaybg -i "${desktopBackground}" -m fill'';
+        }
+      ];
+    };
   };
 
   #programs.fish.loginShellInit = ifLinux ''
