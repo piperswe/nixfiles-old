@@ -243,7 +243,7 @@ in
   };
 
   programs.vscode = {
-    enable = ifLinuxAMD64 true;
+    enable = false;
     userSettings = {
       "extensions.autoUpdate" = false;
       "extensions.autoCheckUpdates" = false;
